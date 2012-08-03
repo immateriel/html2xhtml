@@ -499,20 +499,26 @@ void saxCDataSection(const xchar *ch, int len)
   insert_chardata(ch, len, type);
 }
 
-void saxWhiteSpace()
+void saxWhiteSpace(const xchar *ch, int len)
 {
-  EPRINTF("SAX.whitespace()\n");
+  EPRINTF2("SAX.whitespace(%d)[%s]\n",len,ch);
 
   if (state!=ST_PARSING) return;
 
   /* insert the whitespace only if the actual element has
      mixed contenttype. If not, ignore it because it is irrelevant. */
-  if (actual_element 
-      && ELM_PTR(actual_element).contenttype[doctype] == CONTTYPE_MIXED) {
-    xchar *data = tree_malloc(1);
-    data[0] = 0x20; /* a whitespace */
-    insert_chardata(data, 1, Node_chardata);
-  }
+   if (actual_element && (ELM_PTR(actual_element).contenttype[doctype] == CONTTYPE_MIXED || param_chars_per_line==0)) {
+    if(param_chars_per_line!=0) {
+      EPRINTF("add simple whitespace\n");
+      xchar *data = tree_malloc(1);
+      data[0] = 0x20; /* a whitespace */
+      insert_chardata(data, 1, Node_chardata);
+    } else
+      {
+	EPRINTF("add real whitespaces\n");
+	insert_chardata(ch, len, Node_chardata);
+      }
+   }
 }
 
 
@@ -977,7 +983,7 @@ static void insert_chardata(const xchar *ch, int len, node_type_t type)
   }
 
   /* ¿si el elemento no es de tipo mixed? */
-  if (ELM_PTR(actual_element).contenttype[doctype]!=CONTTYPE_MIXED) {
+   if (ELM_PTR(actual_element).contenttype[doctype]!=CONTTYPE_MIXED) {
     if (dtd_can_be_child(ELMID_P, ELM_ID(actual_element),doctype)) {
       /* inserta un elemento <p> como contenedor */
       tree_node_t *p;
@@ -994,6 +1000,10 @@ static void insert_chardata(const xchar *ch, int len, node_type_t type)
 	actual_element= err_aux_insert_elm(ELMID_LI,NULL,0);
 	DEBUG("[ERR] insertado elemento li");
     } else {
+      tree_node_t *p;
+      p= new_tree_node(Node_chardata); 
+      link_node(p, actual_element, LINK_MODE_CHILD);
+      tree_set_node_data(p, ch, len);
       INFORM("intento de introducir datos en tipo no mixed");
       return;
     }
@@ -2154,6 +2164,7 @@ static int write_node(tree_node_t *node)
     len = write_element(node);
     break;
   case Node_chardata:
+    //    printf("chardata %d\n",node->cont.chardata.data_len);
     if (!xml_space_on && param_chars_per_line!=0)
       len = write_chardata(node);
     else
@@ -2205,7 +2216,7 @@ static int write_element(tree_node_t *elm)
     if (!inline_on) {
       inline_on = 1;
       whitespace_needed = 0;
-      if (!param_compact_block_elms)
+      if (!param_compact_block_elms && param_chars_per_line!=0)
 	len += write_indent(indent, 1);
     }
   }
@@ -2371,6 +2382,7 @@ static int write_chardata_space_preserve(tree_node_t *node)
   data_len = node->cont.chardata.data_len;
   num = 0;
 
+  //  printf("BEGIN%sEND\n",data);
   num += write_plain_data(data, data_len);
 
   return num;
@@ -2381,8 +2393,10 @@ static int write_comment(tree_node_t *comm)
   int num;
   int prev_inline;
 
-  num = write_indent(indent, 1);
-
+  num=0;
+  if(param_chars_per_line!=0) {
+    num = write_indent(indent, 1);
+  }
   write_whitespace_or_newline_if_needed(4); /* strlen("<!--") */
 
   if (param_pre_comments) {

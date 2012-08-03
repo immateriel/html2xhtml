@@ -133,7 +133,7 @@ cdata_sec: TOK_CDATA_SEC {
 ;
 
 whitespace: TOK_WHITESPACE {
-  saxWhiteSpace();
+  saxWhiteSpace($1,strlen($1));
 }
 
 ref: TOK_EREF {

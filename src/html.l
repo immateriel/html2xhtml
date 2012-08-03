@@ -78,7 +78,7 @@ ATT_VAL2   ([^\"'\x09\x0a\x0d\x20\>\<])*
 
 
 {ESP} {if (pre_state) {yylval.cad= yytext; return TOK_CDATA;}
-       else {return TOK_WHITESPACE;}}
+       else {yylval.cad= yytext; return TOK_WHITESPACE;}}
 
 "<!DOCTYPE"{ALL_IN_TAG}\>{ESP} {yylval.cad=trimf(yytext);return TOK_DOCTYPE;}
 "<!doctype"{ALL_IN_TAG}\>{ESP} {yylval.cad=trimf(yytext);return TOK_DOCTYPE;}
