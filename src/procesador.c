@@ -2197,7 +2197,9 @@ static int write_element(tree_node_t *elm)
 
   /* write start tag */
   if (is_block) {
+    if(param_chars_per_line!=0) {
      len += write_indent(indent, 1);
+    }
      inline_on = 0;
   } else {
     if (!inline_on) {
@@ -2221,8 +2223,12 @@ static int write_element(tree_node_t *elm)
     indent -= param_tab_len;
 
   /* write end tag if not empty */
-  if (elm->cont.elemento.hijo) {
+  n = elm->cont.elemento.hijo;
+  if(n) {
+  //  if (elm->cont.elemento.hijo) {
     if (is_block) {
+      if(param_chars_per_line!=0) {
+	// && n->tipo==Node_chardata) {
       if (inline_on) {
 	inline_on = 0;
 	if (!param_compact_block_elms)
@@ -2230,6 +2236,7 @@ static int write_element(tree_node_t *elm)
       } else {
 	len += write_indent(indent, 1);
       }
+    }
     }
     len += write_end_tag(elm);
   } else if (!param_empty_tags
@@ -2439,8 +2446,9 @@ static int write_start_tag(tree_node_t* nodo)
       else limit= '\"';
 
       /* does this attribute fit in this line? */
-      if (inline_on
-	  && param_chars_per_line!=0 && (3 + strlen(att_list[att->att_id].name) 
+      if (inline_on && 
+	  param_chars_per_line!=0 && 
+	  (3 + strlen(att_list[att->att_id].name) 
 	      + strlen(value) + chars_in_line) > param_chars_per_line) {
 	num += write_indent_internal(indent, 1, 1);
       } else {
