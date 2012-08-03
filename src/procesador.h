@@ -86,7 +86,7 @@ void saxEndElement(const xchar *name);
 void saxReference(const xchar *name);
 void saxCharacters(const xchar *ch, int len);
 void saxCDataSection(const xchar *ch, int len);
-void saxWhiteSpace(void);
+void saxWhiteSpace(const xchar *ch, int len);
 void saxComment(const xchar *value);
 void saxDoctype(const xchar *data);
 void saxXmlProcessingInstruction(const xchar *fullname, xchar **atts);
