@@ -2154,7 +2154,7 @@ static int write_node(tree_node_t *node)
     len = write_element(node);
     break;
   case Node_chardata:
-    if (!xml_space_on)
+    if (!xml_space_on && param_chars_per_line!=0)
       len = write_chardata(node);
     else
       len = write_chardata_space_preserve(node);
@@ -2439,8 +2439,8 @@ static int write_start_tag(tree_node_t* nodo)
       else limit= '\"';
 
       /* does this attribute fit in this line? */
-      if (inline_on 
-	  && (3 + strlen(att_list[att->att_id].name) 
+      if (inline_on
+	  && param_chars_per_line!=0 && (3 + strlen(att_list[att->att_id].name) 
 	      + strlen(value) + chars_in_line) > param_chars_per_line) {
 	num += write_indent_internal(indent, 1, 1);
       } else {
@@ -2448,6 +2448,7 @@ static int write_start_tag(tree_node_t* nodo)
 	num++;
 	chars_in_line++;
       }
+
 
       /* write name=(single|double)quote */
       printed = cprintf("%s=%c", att_list[att->att_id].name, limit);
@@ -2556,7 +2557,7 @@ static int write_whitespace_or_newline_if_needed(int next_data_len)
 
   if (inline_on && whitespace_needed) {
     /* does the next text fit in this line */
-    if ((chars_in_line + next_data_len + 1) > param_chars_per_line) {
+    if (param_chars_per_line!=0 && (chars_in_line + next_data_len + 1) > param_chars_per_line) {
       /* write a new line */
       num += write_indent(indent, 1);
     } else {

@@ -162,7 +162,7 @@ static void process_parameters(int argc, char **argv)
       }
     } else if (!strcmp(argv[i], "-l") && ((i+1) < argc)) {
       tmpnum= atoi(argv[++i]);
-      if (tmpnum >= 40)
+      if (tmpnum >= 40 || tmpnum == 0)
 	param_chars_per_line = tmpnum; 
     } else if (!strcmp(argv[i], "-b") && ((i+1) < argc)) {
       tmpnum= atoi(argv[++i]);
