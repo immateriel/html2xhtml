@@ -44,7 +44,7 @@ extern int pre_state;
 %token <cad> TOK_ATT_NAME TOK_ATT_NAMECHAR TOK_ATT_VALUE TOK_EREF TOK_CREF
 %token <cad> TOK_CDATA_SEC TOK_XMLPI_INI
 %token <ent> TOK_STAG_END TOK_EMPTYTAG_END TOK_ATT_EQ TOK_XMLPI_END
-%token <ent> TOK_WHITESPACE
+%token <cad> TOK_WHITESPACE
  
 %%
 
@@ -121,7 +121,7 @@ stag: TOK_STAG_INI attributes TOK_EMPTYTAG_END {
 ;
 
 cdata: TOK_CDATA {
-  //fprintf(stderr,"CDATA: <%s>\n",$1);
+  //  fprintf(stderr,"CDATA: <%s> %d\n",$1,strlen($1));
   saxCharacters($1,strlen($1));
 }
 ;
@@ -133,6 +133,7 @@ cdata_sec: TOK_CDATA_SEC {
 ;
 
 whitespace: TOK_WHITESPACE {
+  //  fprintf(stderr,"WHITESPACE: <%d>\n",strlen($1));
   saxWhiteSpace($1,strlen($1));
 }
 
