@@ -2104,7 +2104,8 @@ static int chars_in_line;
 static int whitespace_needed;
 static int inside_cdata_sec;
 
-#define CBUFFER_SIZE 32768
+#define CBUFFER_SIZE 262144
+//32768
 static char cbuffer[CBUFFER_SIZE];
 static int cbuffer_pos;
 static int cbuffer_avail;
