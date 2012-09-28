@@ -507,7 +507,7 @@ void saxWhiteSpace(const xchar *ch, int len)
 
   /* insert the whitespace only if the actual element has
      mixed contenttype. If not, ignore it because it is irrelevant. */
-   if (actual_element && (ELM_PTR(actual_element).contenttype[doctype] == CONTTYPE_MIXED || param_chars_per_line==0)) {
+  if (actual_element && (ELM_PTR(actual_element).contenttype[doctype] == CONTTYPE_MIXED) || param_chars_per_line==0) {
     if(param_chars_per_line!=0) {
       EPRINTF("add simple whitespace\n");
       xchar *data = tree_malloc(1);
@@ -986,13 +986,13 @@ static void insert_chardata(const xchar *ch, int len, node_type_t type)
    if (ELM_PTR(actual_element).contenttype[doctype]!=CONTTYPE_MIXED) {
     if (dtd_can_be_child(ELMID_P, ELM_ID(actual_element),doctype)) {
       /* inserta un elemento <p> como contenedor */
-      tree_node_t *p;
-
+      /*      tree_node_t *p;
       p= new_tree_node(Node_element);
       p->cont.elemento.elm_id= ELMID_P;
       link_node(p, actual_element, LINK_MODE_CHILD);
       actual_element= p;
       DEBUG("[ERR] insertado elemento <p> para contener PCDATA");
+      */
     } else 
       /* si el padre es <ul> o <ol>, se inserta <li> */ 
 	if((ELM_ID(actual_element)==ELMID_UL)
@@ -2105,7 +2105,7 @@ static int whitespace_needed;
 static int inside_cdata_sec;
 
 #define CBUFFER_SIZE 262144
-//32768
+//#define CBUFFER_SIZE 32768
 static char cbuffer[CBUFFER_SIZE];
 static int cbuffer_pos;
 static int cbuffer_avail;
