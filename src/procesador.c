@@ -997,7 +997,7 @@ static void insert_chardata(const xchar *ch, int len, node_type_t type)
       /* si el padre es <ul> o <ol>, se inserta <li> */ 
 	if((ELM_ID(actual_element)==ELMID_UL)
 	   ||(ELM_ID(actual_element)==ELMID_OL)) {
-	actual_element= err_aux_insert_elm(ELMID_LI,NULL,0);
+	  //actual_element= err_aux_insert_elm(ELMID_LI,NULL,0);
 	DEBUG("[ERR] insertado elemento li");
     } else {
       tree_node_t *p;
