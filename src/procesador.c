@@ -67,7 +67,7 @@
 
 #define MAX_NUM_ERRORS 20
 #define ID_LIST_SIZE    8192
-#define MAX_ELM_CLOSE_SIZE 32768
+#define MAX_ELM_CLOSE_SIZE 65536
 
 extern int is_ascii;
 
