@@ -67,6 +67,7 @@
 
 #define MAX_NUM_ERRORS 20
 #define ID_LIST_SIZE    8192
+#define MAX_ELM_CLOSE_SIZE 32768
 
 extern int is_ascii;
 
@@ -948,17 +949,17 @@ static void elm_close(tree_node_t *nodo)
 
   if (ELM_PTR(nodo).contenttype[doctype]==CONTTYPE_CHILDREN) {
     /* si es de tipo child se comprueba su contenido */
-    int content[16384];
+    int content[MAX_ELM_CLOSE_SIZE];
     int i, num;
     tree_node_t *elm;
 
     for (i=0, num=0, elm= nodo->cont.elemento.hijo;
-	 (i<16384) && elm;
+	 (i<MAX_ELM_CLOSE_SIZE) && elm;
 	 i++, elm= elm->sig)
       if (elm->tipo==Node_element) content[num++]= ELM_ID(elm);
 
     
-    if (i==16384) EXIT("internal error: variable 'i' overflow");
+    if (i==MAX_ELM_CLOSE_SIZE) EXIT("internal error: variable 'i' overflow");
     if (dtd_is_child_valid(ELM_PTR(nodo).contentspec[doctype],content,num)!=1) {
       /* children no válido: a intentar corregirlo */
       if (!err_content_invalid(nodo,content,num))
