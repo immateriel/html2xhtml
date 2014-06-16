@@ -50,6 +50,8 @@
 #include "xchar.h"
 
 
+#define YY_BUF_SIZE 65536
+
 
 typedef int buff_index_t;
 
