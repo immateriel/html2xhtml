@@ -1,0 +1,42 @@
+name: Makefile CI
+
+on:
+  push:
+    tags: ['*']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: buildpack-deps:bookworm
+
+    steps:
+      - uses: actions/checkout@v4
+    
+      # Installe les dépendances spécifiques pour construire le binaire
+      - name: Install build tools
+        run: |
+          apt-get update
+          apt-get install -y make gcc bison flex gettext
+
+      # Construit le paquet
+      - name: Build binary and Debian package
+        run: |
+          mkdir -p html2xhtml/usr/bin
+          aclocal
+          libtoolize
+          touch config.rpath
+          autoheader
+          automake --add-missing
+          autoconf
+          ./configure
+          make
+          cp -v src/dtdquery html2xhtml/usr/bin/
+          cp -v src/html2xhtml html2xhtml/usr/bin/
+          dpkg --build html2xhtml/
+
+      # Publie le paquet dans une Release GitHub
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref_type == 'tag'
+        with:
+          files: ./*.deb

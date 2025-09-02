@@ -1,0 +1,10 @@
+Package: html2xhtml
+Version: 1.1.2-3-12
+License: unknown
+Architecture: amd64
+Maintainer: Julien Boulnois <jboulnois@gmail.com>
+Depends: libc6
+Section: immateriel
+Priority: optional
+Homepage: https://github.com/immateriel/html2xhtml
+Description: no description given
